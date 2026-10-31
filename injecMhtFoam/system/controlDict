@@ -1,0 +1,112 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2312                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      controlDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+application     expMhtFoam;
+
+startFrom       startTime;
+
+startTime       0;
+
+stopAt          endTime;
+
+endTime         1200;
+
+deltaT          0.1;
+
+writeControl    timeStep;
+
+writeInterval   50;
+
+purgeWrite      0;
+
+writeFormat     ascii;
+
+writePrecision  6;
+
+writeCompression off;
+
+timeFormat      general;
+
+timePrecision   6;
+
+runTimeModifiable false;
+
+adjustTimeStep true;
+
+maxCo	1;
+
+
+functions
+  {
+    probes
+      {
+        type		probes;
+	libs		("libsampling.so");
+	writeControl	timeStep;
+	writeInterval	1;
+	fields
+	  (
+	    T
+	    corr
+	  );
+	  probeLocations
+	  (
+            (0.045 0.045 0.01) 		//centro
+            (0.04375 0.04717 0.01) 	// Ponto de Injeção 01
+    	    (0.04375 0.04283 0.01) 	// Ponto de Injeção 02
+            (0.0475 0.045 0.01) 	// Ponto de Injeção 03
+	  );
+      }
+    T_ID
+      {
+        type		multiply;
+	libs		("libfieldFunctionObjects.so");
+        fields          (T ID);
+        result          TID;
+	writeControl	timeStep;
+	writeInterval	50;
+      }
+    corr_ID
+      {
+        type		multiply;
+	libs		("libfieldFunctionObjects.so");
+        fields          (corr ID);
+        result          corrID;
+	writeControl	timeStep;
+	writeInterval	50;
+      }
+    IBV
+      {
+        type		volFieldValue;
+	libs		("libfieldFunctionObjects.so");
+        operation       volIntegrate;
+        fields          (ID corr TID corrID);
+        writeFields     false;
+	writeControl	timeStep;
+	writeInterval	1;
+      }
+    CoV
+      {
+        type		volFieldValue;
+	libs		("libfieldFunctionObjects.so");
+        operation       CoV;
+        fields          (TID corrID);
+        writeFields     false;
+	writeControl	timeStep;
+	writeInterval	1;
+      }
+  }
+ // ************************************************************************* //

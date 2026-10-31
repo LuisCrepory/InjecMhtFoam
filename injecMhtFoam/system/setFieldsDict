@@ -1,0 +1,75 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2312                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      setFieldsDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+/*
+	Tipos de pontos de injeção:
+		-> 1 inj: (0.045 0.045) 		-> Centro do tumor
+		-> 3 inj: (0.04375 0.04717)	-> Radial ao centro
+				(0.04375 0.04283)
+				(0.0475 0.045)
+		-> 5 inj:	(0.04577 0.04738)
+				(0.04298 0.04647)
+				(0.04298 0.04353)
+				(0.04577 0.04262)
+				(0.0475 0.045)
+*/
+
+defaultFieldValues
+(
+    volScalarFieldValue ID 0
+    volScalarFieldValue corr 0
+);
+
+regions
+(
+	cylinderToCell
+	{
+		p1 (0.045 0.045 0); //Min
+		p2 (0.045 0.045 0.01); //Max
+		radius 0.005;
+		fieldValues
+		(
+			volScalarFieldValue ID 1
+		);
+	}
+
+	cylinderToCell
+	{
+		p1 (0.045 0.045 0); //Min
+		p2 (0.045 0.045 0.01); //Max
+		radius 0.00287;
+		fieldValues
+		(
+			volScalarFieldValue corr 0
+		);
+	}
+	//Ponto de injeção 01  
+	  cylinderToCell
+	  {
+	    p1 (0.045 0.045 0); //Min
+	    p2 (0.045 0.045 0.01); //Max
+	    radius 0.00045;
+
+	    fieldValues
+	    (
+		 volScalarFieldValue IP 1
+	    );
+	  }
+
+);
+
+   
+
+// ************************************************************************* //
